@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">My Friendly MORSE</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="previous">Previous</string>
+
+    <string name="option0">MY FRIENDLY MORSE</string>
+    <string name="option1">MORSE DETECTION</string>
+    <string name="option2">MANUAL TRANSLATION</string>
+    <string name="option3">HELP</string>
+    <string name="hint">Write your text here</string>
+    <string name="changeoption">↑↓</string>
+    <string name="CLEAR">CLEAR</string>
+    <string name="textresult"> </string>
+    <string name="SOUND">🔊</string>
+    <string name="LIGHT">💡</string>
+    <string name="PLAY">▶</string>
+    <string name="DOT">•</string>
+    <string name="DASH">-</string>
+    <string name="SPACE">␣</string>
+    <string name="DELETE">⌫</string>
+    <string name="MICROPHONE">🎙️</string>
+    <string name="CAMERA">📷</string>
+</resources>

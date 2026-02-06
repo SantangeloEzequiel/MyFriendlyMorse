@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_only"
+    tools:context=".Morsedetector">
+
+    <!-- BLOQUE 1: Entrada del usuario -->
+    <TextView
+        android:id="@+id/etoutput1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.9"
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
+
+        android:inputType="textMultiLine"
+        android:minLines="4"
+        android:padding="16dp"
+        android:textSize="25sp"
+        android:background="@drawable/background_manualtranslator"
+        android:gravity="top|start"
+        android:fontFamily="sans-serif-smallcaps"
+        android:textColor="@color/black"
+        tools:text="" />
+
+    <!-- TextView para mostrar resultado -->
+    <TextView
+        android:id="@+id/tvOutput1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.9"
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etoutput1"
+        android:layout_marginTop="16dp"
+
+        android:background="@drawable/background_manualtranslator"
+        android:fontFamily="sans-serif-smallcaps"
+        android:gravity="top|start"
+        android:padding="16dp"
+        android:text="@string/textresult"
+        android:textColor="@color/black"
+        android:textSize="25sp" />
+
+    <!-- Layout para botones de PLAY y SOUND -->
+    <LinearLayout
+        android:id="@+id/layoutbtnoptions"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.7"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvOutput1"
+        android:layout_marginTop="16dp"
+
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnmicrophone"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:layout_marginEnd="8dp"
+
+            android:text="@string/MICROPHONE"
+            android:textColor="@color/white"
+            android:backgroundTint="#33D7CCC8"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/btncamera"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"
+
+            android:text="@string/CAMERA"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:backgroundTint="#33D7CCC8"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

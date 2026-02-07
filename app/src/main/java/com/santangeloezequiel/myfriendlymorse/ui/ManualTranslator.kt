@@ -11,8 +11,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.santangelo.morse.MorseDecoder
-import com.santangelo.morse.TextInputMorseEncoder
+import com.santangeloezequiel.morse_core.MorseDecoder
+import com.santangeloezequiel.morse_core.TextInputMorseEncoder
 import com.santangeloezequiel.myfriendlymorse.R
 import com.santangeloezequiel.myfriendlymorse.databinding.FragmentManualtranslatorBinding
 import com.santangeloezequiel.myfriendlymorse.morseplayer.MorseLightPlayer

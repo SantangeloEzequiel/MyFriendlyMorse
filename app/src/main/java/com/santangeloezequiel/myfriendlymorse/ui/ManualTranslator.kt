@@ -8,10 +8,12 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.santangelo.morse.MorseDecoder
 import com.santangelo.morse.TextInputMorseEncoder
+import com.santangeloezequiel.myfriendlymorse.R
 import com.santangeloezequiel.myfriendlymorse.databinding.FragmentManualtranslatorBinding
 import com.santangeloezequiel.myfriendlymorse.morseplayer.MorseLightPlayer
 import com.santangeloezequiel.myfriendlymorse.morseplayer.MorseSoundPlayer
@@ -106,10 +108,8 @@ class ManualTranslator : Fragment() {
 
                     val newText = s.toString()  // esto es lo que escribió hasta ahora
 
-                    val addedText = if (newText.length > previousText.length)
+                    if (newText.length > previousText.length)
                         newText.substring(previousText.length)
-                    else
-                        "" // si borraron ignora
 
                     previousText = newText
 
@@ -150,10 +150,8 @@ class ManualTranslator : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 val newText = s.toString()  // esto es lo que escribió hasta ahora
 
-                val addedText = if (newText.length > previousText.length)
+                if (newText.length > previousText.length)
                     newText.substring(previousText.length)
-                else
-                    "" // si borraron ignora
 
                 previousText = newText
 
@@ -182,15 +180,14 @@ class ManualTranslator : Fragment() {
                 MorseLightPlayer.dotBip() } }
         binding.buttonSPACE.setOnClickListener {  //Cada dos espacios de letra, lo tomo como un espacio de palabra
             if (lastimputSpace){
-                lastimputSpace=false
                 val text = binding.etoutput.text as Editable
                 if (text.isNotEmpty() && text[text.length - 1] == ' ') {
                     text.delete(text.length - 1, text.length) // Borra el último espacio
                     text.append("\t") // Agrega tab
                 }
-            } else {
-                lastimputSpace=true
-                binding.etoutput.append(" ") }}
+            } else
+                binding.etoutput.append(" ") }
+
         binding.btnDelete.setOnClickListener {
                 val text = binding.etoutput.text as Editable
                 if (text.isNotEmpty()) {
@@ -208,19 +205,19 @@ class ManualTranslator : Fragment() {
             soundActive=!soundActive
             if(soundActive){
                 MorseSoundPlayer.init(requireContext())
-                binding.btnsound.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFFFF"))
+                binding.btnsound.backgroundTintList = ColorStateList.valueOf(Color.WHITE)
             }
-            else
-            {binding.btnsound.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#33D7CCC8"))
-                MorseSoundPlayer.release() } }
+            else {
+                binding.btnsound.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.beige))
+                MorseSoundPlayer.release() }
+        }
         binding.btnligth.setOnClickListener {
             lightActive=!lightActive
-
-            if(lightActive){
-                binding.btnligth.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFFFFFFF"))
-            }
+            if(lightActive)
+                binding.btnsound.backgroundTintList = ColorStateList.valueOf(Color.WHITE)
             else
-            {binding.btnligth.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#33D7CCC8"))} }
+                binding.btnsound.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.beige))
+        }
         binding.btnplay.setOnClickListener {
             playActive = !playActive
             if (playActive) {

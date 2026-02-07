@@ -1,7 +1,6 @@
-package com.santangelo.morse
+package com.santangeloezequiel.morse_core
 
-import org.jetbrains.annotations.Nullable
-import kotlin.collections.mutableListOf
+
 import kotlin.text.iterator
 
 
@@ -37,9 +36,9 @@ object TextInputMorseEncoder {
         }
         return result.toString()
     }
-
+    @Suppress("unused") //its an utility of the library
     fun textToMorse (text: String): List<MorseSignal> {
-        return TextInputMorseEncoder.morseTextToMorse(TextInputMorseEncoder.textToMorseText(text))
+        return morseTextToMorse(textToMorseText(text))
     }
 }
 //class AudioMorseInput : MorseInput

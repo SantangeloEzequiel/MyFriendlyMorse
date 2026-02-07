@@ -1,4 +1,4 @@
-package com.santangelo.morse
+package com.santangeloezequiel.morse_core
 
 enum class MorseSignal {
     DOT,

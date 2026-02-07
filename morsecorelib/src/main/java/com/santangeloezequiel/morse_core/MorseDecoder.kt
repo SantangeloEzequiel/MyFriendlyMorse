@@ -1,5 +1,6 @@
-package com.santangelo.morse
+package com.santangeloezequiel.morse_core
 
+@Suppress("unused")
 object MorseDecoder {
 
     fun morseToText(signals: List<MorseSignal>): String{
@@ -43,6 +44,6 @@ object MorseDecoder {
     }
 
     fun morseToMorseText(signals: List<MorseSignal>): String{
-        return TextInputMorseEncoder.textToMorseText(MorseDecoder.morseToText(signals))
+        return TextInputMorseEncoder.textToMorseText(morseToText(signals))
     }
 }

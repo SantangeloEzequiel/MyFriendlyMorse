@@ -8,7 +8,7 @@ import kotlin.math.sin
 // --- Goertzel y FrequencyFinder ajustados para buffers variables ---
 
 class Goertzel(
-    private val sampleRate: Float,
+     sampleRate: Float,
     private val bufferSize: Int,
     val targetFrequency: Float
 ) {
@@ -85,7 +85,6 @@ class FrequencyFinder(
 
         // No hacer copyOf: pasar el buffer directo
         detectors.forEach { detector ->
-            val size = minOf(buffer.size, bufferSize)
             detector.process(buffer) // <-- sin copiar
             val currentPower = powerAccumulator[detector.targetFrequency] ?: 0.0
             powerAccumulator[detector.targetFrequency] = currentPower + detector.getPower()

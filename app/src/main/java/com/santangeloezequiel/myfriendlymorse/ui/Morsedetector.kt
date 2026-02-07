@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,16 +15,16 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.santangelo.morse.MorseDecoder
 import com.santangelo.morse.TextInputMorseEncoder
+import com.santangeloezequiel.myfriendlymorse.R
 import com.santangeloezequiel.myfriendlymorse.audioinput.MorseAudioInput
 import com.santangeloezequiel.myfriendlymorse.databinding.FragmentMorsedetectorBinding
 import kotlin.text.iterator
 
+private const val REQUEST_MIC_PERMISSION = 1001
 class Morsedetector : Fragment() {
 
     private var _binding: FragmentMorsedetectorBinding? = null
     private val binding get() = _binding!!
-
-    private val REQUEST_MIC_PERMISSION = 1001
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +52,6 @@ class Morsedetector : Fragment() {
                 synchronized(morseSignal) {
                     newText = if (lastIndex < morseSignal.length) {
                         val snapshot = morseSignal.substring(lastIndex)
-                        lastIndex = morseSignal.length
                         snapshot
                     } else ""
                 }
@@ -67,20 +65,12 @@ class Morsedetector : Fragment() {
                         when (c) {
                             '•', '-' -> letterBuffer.append(c) // acumula puntos/guiones
                             ' ' -> { // fin de letra
-                                val decoded = try {
-                                    MorseDecoder.morseToText(TextInputMorseEncoder.morseTextToMorse(letterBuffer.toString()))
-                                } catch (e: Exception) {
-                                    "?" // si no se reconoce, poner un ?
-                                }
+                                val decoded = MorseDecoder.morseToText(TextInputMorseEncoder.morseTextToMorse(letterBuffer.toString()))
                                 binding.tvOutput1.append(decoded)
                                 letterBuffer.setLength(0)
                             }
                             '\t' -> { // fin de palabra
-                                val decoded = try {
-                                    MorseDecoder.morseToText(TextInputMorseEncoder.morseTextToMorse(letterBuffer.toString()))
-                                } catch (e: Exception) {
-                                    "?"
-                                }
+                                val decoded = MorseDecoder.morseToText(TextInputMorseEncoder.morseTextToMorse(letterBuffer.toString()))
                                 binding.tvOutput1.append(decoded)
                                // binding.tvOutput1.append(" ") // espacio entre palabras
                                 letterBuffer.setLength(0)
@@ -99,8 +89,7 @@ class Morsedetector : Fragment() {
             when (motionEvent.action) {
 
                 MotionEvent.ACTION_DOWN -> {
-                    binding.btnmicrophone.backgroundTintList =
-                        ColorStateList.valueOf(Color.parseColor("#FFFFFFFF"))
+                    binding.btnmicrophone.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.white))
 
                     // Iniciar detector Morse
                     MorseAudioInput.start(requireContext(), morseSignal)
@@ -113,8 +102,7 @@ class Morsedetector : Fragment() {
                 }
 
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    binding.btnmicrophone.backgroundTintList =
-                        ColorStateList.valueOf(Color.parseColor("#33D7CCC8"))
+                    binding.btnmicrophone.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.beige))
 
                     // Detener detector Morse
                     MorseAudioInput.stop()
@@ -131,19 +119,6 @@ class Morsedetector : Fragment() {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     private fun checkMicrophonePermission() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -152,10 +127,8 @@ class Morsedetector : Fragment() {
         ) {
             onMicrophoneReady()
         } else {
-            requestPermissions(
-                arrayOf(Manifest.permission.RECORD_AUDIO),
+                arrayOf(Manifest.permission.RECORD_AUDIO)
                 REQUEST_MIC_PERMISSION
-            )
         }
     }
 
@@ -164,6 +137,7 @@ class Morsedetector : Fragment() {
        // binding.textView.text = "Micrófono listo 🎤"
     }
 
+    @Deprecated("Usar ActivityResultLauncher para permisos")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,

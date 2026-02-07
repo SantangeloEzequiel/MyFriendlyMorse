@@ -6,19 +6,19 @@ import android.content.Context
 import android.util.Log
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
-import android.os.Handler
-import android.os.Looper
 import android.os.SystemClock
 
 
 private const val BUFFER_SIZE = 512   // cuantos bytes tendra cada callback
 private const val UMBRAL = 0.00035      // Ajustado ligeramente > 0 para evitar ruido puro
 private const val SAMPLE_RATE = 32000 //en Hz
-private const val MIN_FRAME_SILENCE= 0 //
+
+//private const val MIN_FRAME_SILENCE= 0
 
 
 object MorseAudioInput {
 
+    @Suppress("StaticFieldLeak")
     private var mic: MicrophoneInput? = null
     private var finder: FrequencyFinder = FrequencyFinder(SAMPLE_RATE.toFloat(), BUFFER_SIZE)
     private var goertzel: Goertzel? = null
@@ -27,7 +27,6 @@ object MorseAudioInput {
     private var executor = Executors.newSingleThreadExecutor()
     private val running = AtomicBoolean(false)
 
-    private val mainHandler = Handler(Looper.getMainLooper())
 
     // Variables internas de Morse
 
@@ -60,7 +59,7 @@ object MorseAudioInput {
         stop()
         running.set(true)
 
-        mic = MicrophoneInput(context, SAMPLE_RATE, BUFFER_SIZE) { buffer ->
+        mic = MicrophoneInput(context.applicationContext, SAMPLE_RATE, BUFFER_SIZE) { buffer ->
             // Hilo de audio solo encola la tarea; el procesamiento pesado corre en executor
             if (!running.get()) return@MicrophoneInput
 
@@ -100,7 +99,7 @@ object MorseAudioInput {
                                     changeToSound=false
                                     changeToSilence=true
                                     pulseStartTimes.add(now)
-                                    if(counterLearned>-1)silenceRealTimes.add(now - silenceStartTimes.get(counterLearned))
+                                    if(counterLearned>-1)silenceRealTimes.add(now - silenceStartTimes[counterLearned])
                                     counterLearned++
                                 }
 
@@ -111,21 +110,22 @@ object MorseAudioInput {
                                     changeToSilence=false
                                     if(counterLearned>-1){
                                         silenceStartTimes.add((now))
-                                        pulseRealTimes.add(now - pulseStartTimes.get(counterLearned))
+                                        pulseRealTimes.add(now - pulseStartTimes[counterLearned])
                                         if(counterLearned>0){
-                                            if(2 * minOf(pulseRealTimes.get(counterLearned-1),pulseRealTimes.get(counterLearned))< maxOf(pulseRealTimes.get(counterLearned-1),pulseRealTimes.get(counterLearned))){
+                                            if(2 * minOf(pulseRealTimes[counterLearned-1],pulseRealTimes[counterLearned])< maxOf(pulseRealTimes[counterLearned-1],pulseRealTimes[counterLearned])){
                                                 isLearning=false
                                                 //Ultimo codigo de learning
-                                                val prom = (pulseRealTimes.sum() - pulseRealTimes.get(counterLearned)) / (counterLearned-1)
-                                                umbralMorse = (prom + pulseRealTimes.get(counterLearned))/2
-                                                if(pulseRealTimes.get(counterLearned)>pulseRealTimes.get(counterLearned-1)) dotprom = pulseRealTimes.get(counterLearned)
-                                                else dotprom = prom
+                                                val prom = (pulseRealTimes.sum() - pulseRealTimes[counterLearned]) / (counterLearned-1)
+                                                umbralMorse = (prom + pulseRealTimes[counterLearned])/2
+                                               dotprom =  if (pulseRealTimes[counterLearned]>pulseRealTimes[counterLearned-1])
+                                                   pulseRealTimes[counterLearned]
+                                                else prom
                                                 for (i in 0 until counterLearned){
-                                                    if(pulseRealTimes.get(i)<=umbralMorse) synchronized(morseSignal) { morseSignal.append('•') }
+                                                    if(pulseRealTimes[i]<=umbralMorse) synchronized(morseSignal) { morseSignal.append('•') }
                                                     else synchronized(morseSignal) { morseSignal.append('-') }
                                                     if(i<counterLearned){
-                                                        if(silenceRealTimes.get(i)>=7*dotprom) synchronized(morseSignal) { morseSignal.append('\t') }
-                                                        else if(silenceRealTimes.get(i)>= dotprom)synchronized(morseSignal) { morseSignal.append(' ') }
+                                                        if(silenceRealTimes[i]>=7*dotprom) synchronized(morseSignal) { morseSignal.append('\t') }
+                                                        else if(silenceRealTimes[i]>= dotprom)synchronized(morseSignal) { morseSignal.append(' ') }
                                                         }
                                                 }
                                                 silenceStartTime= now //Lo hago porque termina en un simbolo, asi que empieza a contar el silencio

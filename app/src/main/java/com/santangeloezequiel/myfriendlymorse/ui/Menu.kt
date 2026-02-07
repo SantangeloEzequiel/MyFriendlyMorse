@@ -32,10 +32,10 @@ class Menu : Fragment() {
 
         setupPressAnimation(binding.buttonSecond) {
             findNavController().navigate(R.id.action_FirstFragment_to_manualTranslator)
-        // Acción para botón 2
         }
 
         setupPressAnimation(binding.buttonThird) {
+            findNavController().navigate(R.id.action_FirstFragment_to_help)
             // Acción para botón 3
         }
     }

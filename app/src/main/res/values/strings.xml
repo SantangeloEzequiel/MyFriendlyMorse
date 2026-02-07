@@ -23,4 +23,20 @@
     <string name="DELETE">⌫</string>
     <string name="MICROPHONE">🎙️</string>
     <string name="CAMERA">📷</string>
+
+    <string name="help_text">
+       HELP\n\n
+MyFriendlyMorse lets you work with Morse code in different ways:\n\n
+• Manual translator\n
+Convert text to Morse code and play it using sound or light, or translate Morse code back into text.\n\n
+• Sound Morse detector\n
+You can record a real Morse signal using your phone’s microphone.\n
+The app will automatically learn the sender’s rhythm and start translating the message in real time.\n\n
+⚠️ Important\n
+For the sound detector to work properly:\n\n
+- Keep the microphone button pressed until the app learns the sender’s pattern\n
+- Do not release the button during transmission\n
+- Try to keep a steady and consistent rhythm\n\n
+Thank you for using MyFriendlyMorse!
+    </string>
 </resources>

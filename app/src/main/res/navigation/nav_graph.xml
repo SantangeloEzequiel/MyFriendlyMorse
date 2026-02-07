@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_FirstFragment_to_manualTranslator"
             app:destination="@id/manualTranslator" />
+        <action
+            android:id="@+id/action_FirstFragment_to_help"
+            app:destination="@id/help" />
     </fragment>
     <fragment
         android:id="@+id/Morsedetector"
@@ -34,6 +37,14 @@
         android:label="ManualTranslator" >
         <action
             android:id="@+id/action_manualTranslator_to_FirstFragment2"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/help"
+        android:name="com.santangeloezequiel.myfriendlymorse.ui.Help"
+        android:label="help" >
+        <action
+            android:id="@+id/action_manualTranslator_to_help"
             app:destination="@id/FirstFragment" />
     </fragment>
 </navigation>

@@ -91,7 +91,7 @@ object MorseAudioInput {
                         // ===============================
                         //      LOGICA MORSE
                         // ===============================
-                        
+
                         if(isLearning){
                             val now :Long = SystemClock.elapsedRealtime()
                             if (power > UMBRAL) {

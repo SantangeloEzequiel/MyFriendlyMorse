@@ -1,22 +1,21 @@
-package com.santangeloezequiel.myfriendlymorse
+package com.santangeloezequiel.myfriendlymorse.ui
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.santangeloezequiel.myfriendlymorse.databinding.FragmentManualtranslatorBinding
-import com.santangelo.morse.TextInputMorseEncoder
-import com.santangelo.morse.MorseDecoder
-import android.text.TextWatcher
-import android.text.Editable
-import androidx.core.view.marginTop
-import android.content.res.ColorStateList
-import android.graphics.Color
-import com.santangeloezequiel.myfriendlymorse.MorseSoundPlayer
-import com.santangeloezequiel.myfriendlymorse.MorseLightPlayer
-import kotlinx.coroutines.launch
 import androidx.lifecycle.lifecycleScope
+import com.santangelo.morse.MorseDecoder
+import com.santangelo.morse.TextInputMorseEncoder
+import com.santangeloezequiel.myfriendlymorse.databinding.FragmentManualtranslatorBinding
+import com.santangeloezequiel.myfriendlymorse.morseplayer.MorseLightPlayer
+import com.santangeloezequiel.myfriendlymorse.morseplayer.MorseSoundPlayer
+import kotlinx.coroutines.launch
 
 class ManualTranslator : Fragment() {
 
@@ -170,7 +169,7 @@ class ManualTranslator : Fragment() {
             binding.etoutput.append("•")
             lastimputSpace=false
 
-            if(soundActive)lifecycleScope.launch{
+            if(soundActive) lifecycleScope.launch {
                 MorseSoundPlayer.dotBip() }
             if(lightActive)lifecycleScope.launch{
                 MorseLightPlayer.dotBip() } }

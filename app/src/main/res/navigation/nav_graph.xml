@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.santangeloezequiel.myfriendlymorse.Menu"
+        android:name="com.santangeloezequiel.myfriendlymorse.ui.Menu"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_menu">
 
@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/Morsedetector"
-        android:name="com.santangeloezequiel.myfriendlymorse.Morsedetector"
+        android:name="com.santangeloezequiel.myfriendlymorse.ui.Morsedetector"
         android:label="MorseDetector"
         tools:layout="@layout/fragment_morsedetector">
 
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/manualTranslator"
-        android:name="com.santangeloezequiel.myfriendlymorse.ManualTranslator"
+        android:name="com.santangeloezequiel.myfriendlymorse.ui.ManualTranslator"
         android:label="ManualTranslator" >
         <action
             android:id="@+id/action_manualTranslator_to_FirstFragment2"

@@ -1,12 +1,13 @@
-package com.santangeloezequiel.myfriendlymorse
+package com.santangeloezequiel.myfriendlymorse.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.MotionEvent
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.santangeloezequiel.myfriendlymorse.R
 import com.santangeloezequiel.myfriendlymorse.databinding.FragmentMenuBinding
 
 class Menu : Fragment() {

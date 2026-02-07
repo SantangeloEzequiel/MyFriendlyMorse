@@ -25,6 +25,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -47,6 +48,5 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     // LOCAL LIBS
-    implementation(files("libs/morse-core-debug.aar"))
-    implementation("be.tarsos.dsp:core:2.5")
+    implementation(files("libs/morse-core-release.aar"))
 }

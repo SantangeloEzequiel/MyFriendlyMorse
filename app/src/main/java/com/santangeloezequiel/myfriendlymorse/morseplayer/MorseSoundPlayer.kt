@@ -1,14 +1,15 @@
-package com.santangeloezequiel.myfriendlymorse
-import android.media.SoundPool
-import android.media.AudioAttributes
+package com.santangeloezequiel.myfriendlymorse.morseplayer
+
 import android.content.Context
-import kotlinx.coroutines.delay
+import android.media.AudioAttributes
+import android.media.SoundPool
+import com.santangeloezequiel.myfriendlymorse.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
-
-
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.text.iterator
 
 object MorseSoundPlayer {
 
@@ -30,7 +31,7 @@ object MorseSoundPlayer {
             .setAudioAttributes(audioAttributes)
             .build()
 
-        beepId = soundPool.load(context,R.raw.beep700hz, 1)
+        beepId = soundPool.load(context, R.raw.beep700hz, 1)
     }
 
     //Los metodos que voy a usar, short y long beep
@@ -46,7 +47,7 @@ object MorseSoundPlayer {
         val streamId = soundPool.play(beepId, 1f, 1f, 1, -1, 1f)
         currentStreamId = streamId
 
-        delay(duration)
+    delay(duration)
 
         soundPool.stop(streamId)
         if (currentStreamId == streamId) {
@@ -65,18 +66,18 @@ object MorseSoundPlayer {
     }
 
     suspend fun letterGap(){
-        delay(DOT_DURATION*2) //3-1, because one will always be next to a simbol
+        delay(DOT_DURATION * 2) //3-1, because one will always be next to a simbol
     }
 
     suspend fun wordGap(){
-        delay(DOT_DURATION*6) //7-1, because one will always be next to a simbol
+        delay(DOT_DURATION * 6) //7-1, because one will always be next to a simbol
     }
 
 
     //Toco Morse en funcion del texto en pantalla (codificado en MORSE)
     fun playMorse (morseText:String){
         morseJob?.cancel()
-        morseJob=CoroutineScope(Dispatchers.Default).launch {
+        morseJob= CoroutineScope(Dispatchers.Default).launch {
             // morse
             var previous : Char
 
@@ -103,5 +104,3 @@ object MorseSoundPlayer {
     }
 
 }
-
-

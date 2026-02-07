@@ -1,15 +1,15 @@
-package com.santangeloezequiel.myfriendlymorse
+package com.santangeloezequiel.myfriendlymorse.morseplayer
 
-
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import android.content.Context
 import android.hardware.camera2.CameraAccessException
+import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.text.iterator
 
 object MorseLightPlayer {
 
@@ -29,10 +29,10 @@ object MorseLightPlayer {
         try {
             for (id in cameraManager.cameraIdList) {
                 val hasFlash = cameraManager.getCameraCharacteristics(id)
-                    .get(android.hardware.camera2.CameraCharacteristics.FLASH_INFO_AVAILABLE)
+                    .get(CameraCharacteristics.FLASH_INFO_AVAILABLE)
                 val facing = cameraManager.getCameraCharacteristics(id)
-                    .get(android.hardware.camera2.CameraCharacteristics.LENS_FACING)
-                if (hasFlash == true && facing == android.hardware.camera2.CameraCharacteristics.LENS_FACING_BACK) {
+                    .get(CameraCharacteristics.LENS_FACING)
+                if (hasFlash == true && facing == CameraCharacteristics.LENS_FACING_BACK) {
                     cameraId = id
                     break
                 }
@@ -83,18 +83,18 @@ object MorseLightPlayer {
     }
 
     suspend fun letterGap(){
-        delay(DOT_DURATION*2) //3-1, because one will always be next to a simbol
+        delay(DOT_DURATION * 2) //3-1, because one will always be next to a simbol
     }
 
     suspend fun wordGap(){
-        delay(DOT_DURATION*6) //7-1, because one will always be next to a simbol
+        delay(DOT_DURATION * 6) //7-1, because one will always be next to a simbol
     }
 
 
     //Toco Morse en funcion del texto en pantalla (codificado en MORSE)
     fun playMorse (morseText:String){
         morseJob?.cancel()
-        morseJob=CoroutineScope(Dispatchers.Default).launch {
+        morseJob= CoroutineScope(Dispatchers.Default).launch {
             // morse
             var previous : Char
 

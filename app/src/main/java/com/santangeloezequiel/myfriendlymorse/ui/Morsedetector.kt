@@ -1,20 +1,24 @@
-package com.santangeloezequiel.myfriendlymorse
+package com.santangeloezequiel.myfriendlymorse.ui
 
 import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Bundle
-import android.view.*
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import com.santangeloezequiel.myfriendlymorse.databinding.FragmentMorsedetectorBinding
-import android.view.MotionEvent
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
-
-//Librerias de MORSE
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.santangelo.morse.MorseDecoder
 import com.santangelo.morse.TextInputMorseEncoder
+import com.santangeloezequiel.myfriendlymorse.audioinput.MorseAudioInput
+import com.santangeloezequiel.myfriendlymorse.databinding.FragmentMorsedetectorBinding
+import kotlin.text.iterator
 
 class Morsedetector : Fragment() {
 
@@ -42,7 +46,7 @@ class Morsedetector : Fragment() {
         checkMicrophonePermission()
 
         // Handler y Runnable para actualizar UI periódicamente
-        val updateHandler = android.os.Handler(android.os.Looper.getMainLooper())
+        val updateHandler = Handler(Looper.getMainLooper())
         val updateRunnable = object : Runnable {
             override fun run() {
                 val newText: String

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_only"
-    tools:context=".ManualTranslator">
+    tools:context=".ui.ManualTranslator">
 
     <!-- BLOQUE 1: Entrada del usuario y cuando se pulsa el boton, muestra de morse de entrada-->
     <FrameLayout

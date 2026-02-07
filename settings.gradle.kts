@@ -16,11 +16,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            name = "TarsosDSP repository"
-            url = uri("https://mvn.0110.be/releases")
-        }
-
     }
 }
 
@@ -31,3 +26,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "My Friendly MORSE"
 include(":app")
+include(":app", ":morsecorelib")
+

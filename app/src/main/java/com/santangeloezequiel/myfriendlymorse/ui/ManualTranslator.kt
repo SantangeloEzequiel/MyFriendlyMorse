@@ -17,7 +17,7 @@ import com.santangeloezequiel.myfriendlymorse.R
 import com.santangeloezequiel.myfriendlymorse.databinding.FragmentManualtranslatorBinding
 import com.santangeloezequiel.myfriendlymorse.morseplayer.MorseLightPlayer
 import com.santangeloezequiel.myfriendlymorse.morseplayer.MorseSoundPlayer
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class ManualTranslator : Fragment() {
 
@@ -222,8 +222,21 @@ class ManualTranslator : Fragment() {
             playActive = !playActive
             if (playActive) {
                 binding.btnplay.text = ("■")
-                if (soundActive) MorseSoundPlayer.playMorse(binding.tvOutput.text.toString())
-                if (lightActive) MorseLightPlayer.playMorse(binding.tvOutput.text.toString())
+                if (soundActive)
+                    MorseSoundPlayer.playMorse(binding.tvOutput.text.toString())
+                if (lightActive)
+                    MorseLightPlayer.playMorse(binding.tvOutput.text.toString())
+
+                // Coroutine que espera a que termine la reproducción
+                CoroutineScope(Dispatchers.Main).launch {
+                    // Mientras el job esté activo, esperamos
+                    while (MorseSoundPlayer.isPlaying()) {
+                        delay(50)
+                    }
+                    // Cuando termina, ponemos el botón en ▶
+                    binding.btnplay.text = "▶"
+                }
+
             } else {
                 binding.btnplay.text = ("▶")
                 MorseLightPlayer.stopMorse()

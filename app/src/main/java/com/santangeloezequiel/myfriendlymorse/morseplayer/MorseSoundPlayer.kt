@@ -103,4 +103,9 @@ object MorseSoundPlayer {
         morseJob=null
     }
 
+    fun isPlaying(): Boolean {
+        return currentStreamId != null || (morseJob?.isActive == true)
+    }
+
+
 }

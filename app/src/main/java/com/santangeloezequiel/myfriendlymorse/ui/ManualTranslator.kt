@@ -214,9 +214,9 @@ class ManualTranslator : Fragment() {
         binding.btnligth.setOnClickListener {
             lightActive=!lightActive
             if(lightActive)
-                binding.btnsound.backgroundTintList = ColorStateList.valueOf(Color.WHITE)
+                binding.btnligth.backgroundTintList = ColorStateList.valueOf(Color.WHITE)
             else
-                binding.btnsound.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.beige))
+                binding.btnligth.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.beige))
         }
         binding.btnplay.setOnClickListener {
             playActive = !playActive

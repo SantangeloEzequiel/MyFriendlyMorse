@@ -10,8 +10,15 @@ import android.os.SystemClock
 
 
 private const val BUFFER_SIZE = 512   // cuantos bytes tendra cada callback
-private const val UMBRAL = 0.00035      // Ajustado ligeramente > 0 para evitar ruido puro
+
 private const val SAMPLE_RATE = 32000 //en Hz
+
+
+private const val UMBRAL  = 0.00038 // Ajustado ligeramente > 0 para evitar ruido puro
+
+private const val MIN_TIME = 30L // ms
+
+
 
 //private const val MIN_FRAME_SILENCE= 0
 
@@ -32,6 +39,7 @@ object MorseAudioInput {
 
     //para learning
     private var isLearning = true
+
     private var counterLearned = -1
     private val pulseStartTimes = mutableListOf<Long>()
     private val pulseRealTimes = mutableListOf<Long>()
@@ -39,16 +47,23 @@ object MorseAudioInput {
     private val silenceStartTimes = mutableListOf<Long>()
     private val silenceRealTimes = mutableListOf<Long>()
 
-    //para en general
-    private var umbralMorse : Long = 0
 
+    //para en general
+
+    private var umbralMorse : Long = 0
+    private var umbralSilence : Long = 0
+    private var dotprom : Long = 0
     private var changeToSound = true
     private var changeToSilence = false
     private var pulseRealTime:Long = 0
     private var pulseStartTime:Long = 0
     private var silenceRealTime:Long = 0
     private var silenceStartTime:Long = 0
-    private var dotprom : Long = 0 //promedio duracion dot
+
+    private var lastFrameTime : Long = 0L
+
+    private var happendTwice : Boolean = false
+
 
 
 
@@ -88,93 +103,160 @@ object MorseAudioInput {
                         val power = goertzel!!.getPower()
 
                         // ===============================
-                        //      LOGICA MORSE
+                        //      INICIO LOGICA MORSE
                         // ===============================
 
-                        if(isLearning){
-                            val now :Long = SystemClock.elapsedRealtime()
+
+                        val now = SystemClock.elapsedRealtime()
+
+                        if (now - lastFrameTime < MIN_TIME) return@execute
+                        lastFrameTime = now
+                        //in this if now it would be previous now
+
+                        if (isLearning) {
+
+
                             if (power > UMBRAL) {
-                                Log.d("MorseAudioInput", "OOOOOO")
-                                if(changeToSound){
-                                    changeToSound=false
-                                    changeToSilence=true
+
+                                if (changeToSound) {
+                                    changeToSound = false
+                                    changeToSilence = true
+
                                     pulseStartTimes.add(now)
-                                    if(counterLearned>-1)silenceRealTimes.add(now - silenceStartTimes[counterLearned])
+
+                                    if (counterLearned > -1)
+                                        silenceRealTimes.add(now - silenceStartTimes.last())
+
                                     counterLearned++
+                                    if (counterLearned > 0) Log.d("MorseAudioInput", "silenceRealTime = ${silenceRealTimes.last()}  counterLearned= $counterLearned")
                                 }
-                            }
-                            else {
-                                Log.d("MorseAudioInput", "-----")
-                                if(changeToSilence){
-                                    changeToSound=true
-                                    changeToSilence=false
-                                    if(counterLearned>-1){
-                                        silenceStartTimes.add((now))
-                                        pulseRealTimes.add(now - pulseStartTimes[counterLearned])
-                                        if(counterLearned>0){
-                                            if(2 * minOf(pulseRealTimes[counterLearned-1],pulseRealTimes[counterLearned])< maxOf(pulseRealTimes[counterLearned-1],pulseRealTimes[counterLearned])){
-                                                isLearning=false
-                                                //Ultimo codigo de learning
-                                                val prom = (pulseRealTimes.sum() - pulseRealTimes[counterLearned]) / (counterLearned-1)
-                                                umbralMorse = (prom + pulseRealTimes[counterLearned])/2
 
-                                                dotprom =  if (pulseRealTimes[counterLearned]>pulseRealTimes[counterLearned-1])
-                                                   pulseRealTimes[counterLearned]
-                                                else
-                                                    prom
+                            } else if (power < UMBRAL) {
 
-                                                for (i in 0 until counterLearned){
-                                                    if(pulseRealTimes[i]<=umbralMorse)
-                                                        synchronized(morseSignal) { morseSignal.append('•') }
-                                                    else
-                                                        synchronized(morseSignal) { morseSignal.append('-') }
-                                                    if(i<counterLearned){
-                                                        if(silenceRealTimes[i]>=7*dotprom)
-                                                            synchronized(morseSignal) { morseSignal.append('\t') }
-                                                        else if(silenceRealTimes[i]>= dotprom)
-                                                            synchronized(morseSignal) { morseSignal.append(' ') }
-                                                        }
+                                if (changeToSilence) {
+                                    changeToSound = true
+                                    changeToSilence = false
+
+                                    if (counterLearned > -1) {
+
+                                        silenceStartTimes.add(now)
+                                        pulseRealTimes.add(now - pulseStartTimes.last())
+
+                                        Log.d(
+                                            "MorseAudioInput",
+                                            "pulseRealTime = ${pulseRealTimes.last()}  counterLearned= $counterLearned"
+                                        )
+                                        if (counterLearned > 0) {
+
+                                            val prev = pulseRealTimes[pulseRealTimes.size - 2]
+                                            val curr = pulseRealTimes.last()
+
+
+                                            if (1.5 * minOf(prev, curr) < maxOf(prev, curr)) {
+                                                if(happendTwice) {
+                                                    isLearning = false
+
+                                                    val dotPulses = if (prev < curr) {
+                                                        pulseRealTimes.filter { it * 1.5< curr }
+                                                    } else {
+                                                        pulseRealTimes.filter { it >= curr * 1.5 }
+                                                    }
+
+                                                    if (dotPulses.isEmpty()) {
+                                                        Log.w(
+                                                            "MorseAudioInput",
+                                                            "dotPulses vacío, no se puede calcular umbrales"
+                                                        )
+                                                        return@execute
+                                                    }
+
+                                                    val maxDot = dotPulses.max()
+
+                                                    val dashPulses =
+                                                        pulseRealTimes.filter { it > maxDot }
+                                                    if (dashPulses.isEmpty()) {
+                                                        Log.w(
+                                                            "MorseAudioInput",
+                                                            "dashPulses vacío, no se puede calcular umbral Morse"
+                                                        )
+                                                        return@execute
+                                                    }
+
+                                                    val minDash = dashPulses.min()
+
+                                                    umbralMorse =
+                                                        ((maxDot + minDash) / 2.4).toLong()
+                                                    umbralSilence = (maxDot * 1.05).toLong()
+
+                                                    Log.d(
+                                                        "MorseAudioInput",
+                                                        "umbral Morse = $umbralMorse dotprom = $dotprom umbralSilence = $umbralSilence"
+                                                    )
+
+                                                    val maxIndex = minOf(
+                                                        counterLearned,
+                                                        pulseRealTimes.size,
+                                                        silenceRealTimes.size
+                                                    )
+
+                                                    for (i in 0 until maxIndex + 1) {
+
+                                                        if (i > 0) decideMorseSilence(
+                                                            silenceRealTimes[i - 1],
+                                                            umbralSilence,
+                                                            morseSignal
+                                                        )
+
+                                                        decideMorseSound(
+                                                            pulseRealTimes[i],
+                                                            umbralMorse,
+                                                            morseSignal
+                                                        )
+
+                                                    }
                                                 }
-                                                silenceStartTime= now //Lo hago porque termina en un simbolo, asi que empieza a contar el silencio
-                                                //fin de ultimo codigo de learning
+                                                silenceStartTime=now
                                             }
+                                            happendTwice=true
                                         }
                                     }
                                 }
                             }
-                        }
-                        else{ //if (!isLearning)
-                            val now:Long = SystemClock.elapsedRealtime()
+                        } else {
+                            // !isLearning
                             if (power > UMBRAL) {
-                                Log.d("MorseAudioInput", "OOOOOO $changeToSound $changeToSilence $pulseStartTime $silenceStartTime")
-                                if(changeToSound) {
-                                    changeToSound=false
-                                    changeToSilence=true
+
+                                if (changeToSound) {
+                                    changeToSound = false
+                                    changeToSilence = true
 
                                     pulseStartTime = now
                                     silenceRealTime = now - silenceStartTime
 
-                                    if(silenceRealTime>=7*dotprom) synchronized(morseSignal) { morseSignal.append('\t') }
-                                    else if(silenceRealTime>= dotprom)synchronized(morseSignal) { morseSignal.append(' ') }
+                                    decideMorseSilence(
+                                        silenceRealTime,
+                                        umbralSilence,
+                                        morseSignal
+                                    )
                                 }
-                            }
-                            else {
-                                Log.d("MorseAudioInput", "----- $changeToSound $changeToSilence $pulseRealTime $silenceRealTime")
-                                if(changeToSilence){
-                                    changeToSound=true
-                                    changeToSilence=false
 
-                                    silenceStartTime= now
+                            } else if (power < UMBRAL) {
+
+                                if (changeToSilence) {
+                                    changeToSound = true
+                                    changeToSilence = false
+
+                                    silenceStartTime = now
                                     pulseRealTime = now - pulseStartTime
 
-                                    if(pulseRealTime<=umbralMorse) synchronized(morseSignal) { morseSignal.append('•') }
-                                    else synchronized(morseSignal) { morseSignal.append('-') }
-
+                                    decideMorseSound(
+                                        pulseRealTime,
+                                        umbralMorse,
+                                        morseSignal
+                                    )
                                 }
                             }
                         }
-
-
                         // ===============================
                         //     FIN LOGICA MORSE
                         // ===============================
@@ -211,15 +293,39 @@ object MorseAudioInput {
         silenceRealTimes.clear()
 
         umbralMorse = 0
-        dotprom = 0
 
         changeToSound = true
         changeToSilence = false
+        happendTwice = false
 
         pulseRealTime = 0
         pulseStartTime = 0
         silenceRealTime = 0
         silenceStartTime = 0
+        lastFrameTime = 0L
     }
+
+    private fun appendMorseSignal(morseSignal: StringBuffer, ch: Char) {
+        synchronized(morseSignal) { morseSignal.append(ch) }
+    }
+
+    private fun decideMorseSound(pulseRealTime : Long, umbralMorse : Long, morseSignal : StringBuffer){
+        Log.d("MorseAudioInput", "sonido $pulseRealTime   umbral = $umbralMorse")
+        if(pulseRealTime <= umbralMorse)
+            appendMorseSignal(morseSignal,'•')
+        else
+            appendMorseSignal(morseSignal,'-')
+    }
+
+    private fun decideMorseSilence(silenceRealTime : Long, umbralSilence : Long, morseSignal : StringBuffer){
+        Log.d("MorseAudioInput", "silencio $silenceRealTime   umbral = $umbralSilence")
+        if(silenceRealTime >= umbralSilence * 2)
+            appendMorseSignal(morseSignal, '\t')
+        else if(silenceRealTime >= umbralSilence) {
+            appendMorseSignal(morseSignal, ' ')
+            Log.d("MorseAudioInput", "------------")
+        }
+    }
+
 }
 

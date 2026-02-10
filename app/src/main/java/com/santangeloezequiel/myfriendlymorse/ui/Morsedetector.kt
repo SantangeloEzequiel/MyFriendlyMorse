@@ -77,6 +77,7 @@ class Morsedetector : Fragment() {
                             }
                         }
                     }
+                    lastIndex = morseSignal.length
                 }
 
                 // Repetir mientras el botón siga presionado

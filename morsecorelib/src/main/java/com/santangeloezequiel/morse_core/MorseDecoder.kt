@@ -17,7 +17,7 @@ object MorseDecoder {
                     }
 
                 }
-                result.append(' ') //every word gap is a space
+                result.append('\t') //every word gap is a space
                 continue //if the element is a space, it is not a letter, so go to the next element
             }
 

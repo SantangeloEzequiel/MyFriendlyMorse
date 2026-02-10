@@ -72,7 +72,7 @@ class Morsedetector : Fragment() {
                             '\t' -> { // fin de palabra
                                 val decoded = MorseDecoder.morseToText(TextInputMorseEncoder.morseTextToMorse(letterBuffer.toString()))
                                 binding.tvOutput1.append(decoded)
-                               // binding.tvOutput1.append(" ") // espacio entre palabras
+                                binding.tvOutput1.append(" ")
                                 letterBuffer.setLength(0)
                             }
                         }
@@ -128,14 +128,14 @@ class Morsedetector : Fragment() {
         ) {
             onMicrophoneReady()
         } else {
-                arrayOf(Manifest.permission.RECORD_AUDIO)
-                REQUEST_MIC_PERMISSION
+            arrayOf(Manifest.permission.RECORD_AUDIO)
+            REQUEST_MIC_PERMISSION
         }
     }
 
     private fun onMicrophoneReady() {
         // ACÁ después vas a iniciar el detector Morse
-       // binding.textView.text = "Micrófono listo 🎤"
+        // binding.textView.text = "Micrófono listo 🎤"
     }
 
     @Deprecated("Usar ActivityResultLauncher para permisos")

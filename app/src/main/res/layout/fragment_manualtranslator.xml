@@ -32,7 +32,7 @@
             android:background="@drawable/background_manualtranslator"
             android:gravity="top|start"
 
-            android:fontFamily="sans-serif-smallcaps"
+            android:fontFamily="@font/courier"
             android:textColor="@color/black"
             />
         <TextView
@@ -40,7 +40,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/hint"
-            android:inputType="textMultiLine"
             android:minLines="4"
             android:padding="16dp"
             android:textSize="25sp"
@@ -50,7 +49,7 @@
 
             android:visibility="gone"
 
-            android:fontFamily="sans-serif-smallcaps"
+            android:fontFamily="@font/courier"
             android:textColor="@color/black"
             />
     </FrameLayout>
@@ -153,7 +152,7 @@
         android:layout_height="0dp"
         android:layout_margin="0dp"
         android:background="@drawable/background_manualtranslator"
-        android:fontFamily="sans-serif-smallcaps"
+        android:fontFamily="@font/courier"
         android:gravity="top|start"
 
         android:text="@string/textresult"

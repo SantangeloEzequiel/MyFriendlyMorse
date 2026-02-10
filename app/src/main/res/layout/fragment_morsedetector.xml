@@ -26,7 +26,7 @@
         android:textSize="25sp"
         android:background="@drawable/background_manualtranslator"
         android:gravity="top|start"
-        android:fontFamily="sans-serif-smallcaps"
+        android:fontFamily="@font/courier"
         android:textColor="@color/black"
         tools:text="" />
 
@@ -43,7 +43,7 @@
         android:layout_marginTop="16dp"
 
         android:background="@drawable/background_manualtranslator"
-        android:fontFamily="sans-serif-smallcaps"
+        android:fontFamily="@font/courier"
         android:gravity="top|start"
         android:padding="16dp"
         android:text="@string/textresult"

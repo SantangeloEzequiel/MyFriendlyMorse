@@ -37,6 +37,7 @@ For the sound detector to work properly:\n\n
 - Keep the microphone button pressed until the app learns the sender’s pattern\n
 - Do not release the button during transmission\n
 - Try to keep a steady and consistent rhythm\n\n
+- ALWAYS START TO RECORD IN A SILENCE; because in a sound it may only cach the last part and ruin the learning part!\n\n
 Thank you for using MyFriendlyMorse!
     </string>
 </resources>

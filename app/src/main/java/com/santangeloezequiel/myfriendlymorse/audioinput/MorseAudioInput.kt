@@ -16,7 +16,7 @@ private const val SAMPLE_RATE = 32000 //en Hz
 
 private const val UMBRAL  = 0.00038 // Ajustado ligeramente > 0 para evitar ruido puro
 
-private const val MIN_TIME = 30L // ms
+private const val MIN_TIME = 50L // ms
 
 
 
@@ -152,14 +152,23 @@ object MorseAudioInput {
                                             val curr = pulseRealTimes.last()
 
 
-                                            if (1.5 * minOf(prev, curr) < maxOf(prev, curr)) {
+                                            if (1.4 * minOf(prev, curr) < maxOf(prev, curr)) {
                                                 if(happendTwice) {
                                                     isLearning = false
 
-                                                    val dotPulses = if (prev < curr) {
-                                                        pulseRealTimes.filter { it * 1.5< curr }
-                                                    } else {
-                                                        pulseRealTimes.filter { it >= curr * 1.5 }
+
+                                                    //CALCULO SONIDOS
+                                                    val dotPulses = mutableListOf<Long>()
+                                                    val dashPulses = mutableListOf<Long>()
+
+                                                    umbralMorse = (prev + curr)/2
+
+                                                    for (i in 1 until pulseRealTimes.size){
+                                                        if (pulseRealTimes[i]<=umbralMorse){
+                                                            dotPulses.add(pulseRealTimes[i])
+                                                        }
+                                                        else
+                                                            dashPulses.add(pulseRealTimes[i])
                                                     }
 
                                                     if (dotPulses.isEmpty()) {
@@ -169,11 +178,6 @@ object MorseAudioInput {
                                                         )
                                                         return@execute
                                                     }
-
-                                                    val maxDot = dotPulses.max()
-
-                                                    val dashPulses =
-                                                        pulseRealTimes.filter { it > maxDot }
                                                     if (dashPulses.isEmpty()) {
                                                         Log.w(
                                                             "MorseAudioInput",
@@ -182,11 +186,35 @@ object MorseAudioInput {
                                                         return@execute
                                                     }
 
+                                                    val maxDot = dotPulses.max()
                                                     val minDash = dashPulses.min()
 
-                                                    umbralMorse =
-                                                        ((maxDot + minDash) / 2.4).toLong()
-                                                    umbralSilence = (maxDot * 1.05).toLong()
+                                                    umbralMorse = (maxDot + minDash) / 2
+
+                                                    //CALCULO SILENCIOS
+
+                                                    umbralSilence= (maxDot * 1.5).toLong()
+
+                                                    val simbolSilences = mutableListOf<Long>()
+                                                    val otherSilences =  mutableListOf<Long>()
+
+                                                    for (i in 1 until silenceRealTimes.size){
+                                                        if (silenceRealTimes[i]<=umbralSilence){
+                                                            simbolSilences.add(silenceRealTimes[i])
+                                                        }
+                                                        else
+                                                            otherSilences.add(silenceRealTimes[i])
+                                                    }
+
+                                                    if (simbolSilences.isEmpty()) {
+                                                        otherSilences.add(otherSilences.min()/2) //Esto porque pueden ser letras o palabras separadas sin simbolos
+                                                    }
+
+                                                    if (otherSilences.isEmpty()) {
+                                                        otherSilences.add(2* simbolSilences.max()) //Esto porque puede que no haya letras de silencio en learning
+                                                    }
+
+                                                    umbralSilence = (simbolSilences.max() + otherSilences.min()) / 2
 
                                                     Log.d(
                                                         "MorseAudioInput",
@@ -319,7 +347,7 @@ object MorseAudioInput {
 
     private fun decideMorseSilence(silenceRealTime : Long, umbralSilence : Long, morseSignal : StringBuffer){
         Log.d("MorseAudioInput", "silencio $silenceRealTime   umbral = $umbralSilence")
-        if(silenceRealTime >= umbralSilence * 2)
+        if(silenceRealTime >= umbralSilence * 1.8)
             appendMorseSignal(morseSignal, '\t')
         else if(silenceRealTime >= umbralSilence) {
             appendMorseSignal(morseSignal, ' ')

@@ -37,7 +37,7 @@
         android:elevation="4dp"
 
         android:focusable="true"
-        android:fontFamily="sans-serif-smallcaps"
+        android:fontFamily="@font/courier"
 
         android:stateListAnimator="@animator/lift_on_touch"
         android:text="@string/option1"
@@ -61,7 +61,7 @@
         android:elevation="4dp"
 
         android:focusable="true"
-        android:fontFamily="sans-serif-smallcaps"
+        android:fontFamily="@font/courier"
 
         android:stateListAnimator="@animator/lift_on_touch"
         android:text="@string/option2"
@@ -87,7 +87,7 @@
         android:elevation="4dp"
         android:focusable="true"
 
-        android:fontFamily="sans-serif-smallcaps"
+        android:fontFamily="@font/courier"
         android:stateListAnimator="@animator/lift_on_touch"
         android:text="@string/option3"
         android:textColor="@color/white"

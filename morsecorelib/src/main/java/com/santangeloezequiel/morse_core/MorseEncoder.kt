@@ -41,5 +41,3 @@ object TextInputMorseEncoder {
         return morseTextToMorse(textToMorseText(text))
     }
 }
-//class AudioMorseInput : MorseInput
-//class LightMorseInput : MorseInput

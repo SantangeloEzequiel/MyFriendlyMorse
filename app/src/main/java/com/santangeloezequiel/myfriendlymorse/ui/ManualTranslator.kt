@@ -95,27 +95,27 @@ class ManualTranslator : Fragment() {
 
         binding.etInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                    // Antes de que cambie el texto no hago nada
-                }
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+                // Antes de que cambie el texto no hago nada
+            }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    // Se ejecuta mientras el usuario escribe
+                // Se ejecuta mientras el usuario escribe
 
-                    val newText = s.toString()  // esto es lo que escribió hasta ahora
+                val newText = s.toString()  // esto es lo que escribió hasta ahora
 
-                    if (newText.length > previousText.length)
-                        newText.substring(previousText.length)
+                if (newText.length > previousText.length)
+                    newText.substring(previousText.length)
 
-                    previousText = newText
+                previousText = newText
 
-                    val morseText = TextInputMorseEncoder.textToMorseText(newText)
-                    binding.tvOutput.text = morseText
-                }
+                val morseText = TextInputMorseEncoder.textToMorseText(newText)
+                binding.tvOutput.text = morseText
+            }
 
             override fun afterTextChanged(s: Editable?) {
                 // despues de que cambie el texto no hago nada, lo hago durante
@@ -183,16 +183,19 @@ class ManualTranslator : Fragment() {
                 val text = binding.etoutput.text as Editable
                 if (text.isNotEmpty() && text[text.length - 1] == ' ') {
                     text.delete(text.length - 1, text.length) // Borra el último espacio
-                    text.append("\t") // Agrega tab
+                    text.append('\t') // Agrega tab
                 }
-            } else
-                binding.etoutput.append(" ") }
+            } else{
+                binding.etoutput.append(" ")
+                lastimputSpace=true
+            }
+                 }
 
         binding.btnDelete.setOnClickListener {
-                val text = binding.etoutput.text as Editable
-                if (text.isNotEmpty()) {
-                    text.delete(text.length - 1, text.length) // Borra el último espacio
-                }
+            val text = binding.etoutput.text as Editable
+            if (text.isNotEmpty()) {
+                text.delete(text.length - 1, text.length) // Borra el último espacio
+            }
         }
 
 
